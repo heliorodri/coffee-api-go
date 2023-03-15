@@ -1,0 +1,10 @@
+# App Configuration
+[app]
+name = "Coffee Shop"
+port = 8080
+env = "dev"
+
+# Log Configuration
+[log]
+level = "info"
+file_path = "/var/log/my-app.log"
