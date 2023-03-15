@@ -3,6 +3,8 @@ package api
 import (
 	"net/http"
 
+	productDtos "coffee-api-go/dto/product"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +22,15 @@ func (p *ProductController) GetProductByID(c *gin.Context) {
 }
 
 func (p *ProductController) CreateProduct(c *gin.Context) {
+	var newProduct productDtos.CreateProductDTO
+	if err := c.BindJSON(&newProduct); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	// your logic for creating a new product goes here
-	c.JSON(http.StatusOK, gin.H{"data": "Product created"})
+
+	c.JSON(http.StatusOK, gin.H{"data": newProduct})
 }
 
 func (p *ProductController) UpdateProduct(c *gin.Context) {
