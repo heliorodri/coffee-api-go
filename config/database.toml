@@ -1,0 +1,10 @@
+# Database Configuration
+[database]
+driver = "postgres"
+host = "localhost"
+port = 5432
+name = ${POSTGRES_DB}
+username = ${POSTGRES_USER}
+password = ${POSTGRES_PASSWORD}
+max_idle_connections = 5
+max_open_connections = 10
