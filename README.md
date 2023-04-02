@@ -1,4 +1,4 @@
-# coffee-api-go
+# [WIP] coffee-api-go
 
 ## Set up username and password for DB 
 > This step is needed only for the first time you're setting up the database or in case you delete the `.env` file
