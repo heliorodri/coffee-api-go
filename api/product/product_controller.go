@@ -3,34 +3,46 @@ package api
 import (
 	"net/http"
 
-	productDtos "coffee-api-go/dto/product"
+	"coffee-api-go/service"
+
+	models "coffee-api-go/model"
 
 	"github.com/gin-gonic/gin"
 )
 
-type ProductController struct{}
+type ProductController struct {
+	productService service.ProductService
+}
+
+func NewProductController(productService *service.ProductService) *ProductController {
+	return &ProductController{
+		productService: *productService,
+	}
+}
 
 func (p *ProductController) GetAllProducts(c *gin.Context) {
-	// your logic for fetching all products goes here
-	c.JSON(http.StatusOK, gin.H{"data": "All products"})
+	products, err := p.productService.GetAllProducts()
+
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": products})
 }
 
 func (p *ProductController) GetProductByID(c *gin.Context) {
-	// your logic for fetching a product by ID goes here
 	id := c.Param("id")
 	c.JSON(http.StatusOK, gin.H{"data": "Product with ID " + id})
 }
 
 func (p *ProductController) CreateProduct(c *gin.Context) {
-	var newProduct productDtos.CreateProductDTO
+	var newProduct models.Product
 	if err := c.BindJSON(&newProduct); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// your logic for creating a new product goes here
-
-	c.JSON(http.StatusOK, gin.H{"data": newProduct})
+	p.productService.CreateProduct(&newProduct)
 }
 
 func (p *ProductController) UpdateProduct(c *gin.Context) {
