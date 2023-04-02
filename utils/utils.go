@@ -1,4 +1,4 @@
-package util
+package utils
 
 import (
 	"strconv"
@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func extractId(c *gin.Context) uint {
+func ExtractId(c *gin.Context) uint {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 
 	if err != nil {

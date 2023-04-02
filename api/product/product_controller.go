@@ -7,7 +7,7 @@ import (
 	"coffee-api-go/service"
 
 	models "coffee-api-go/model"
-	utils "coffee-api-go/util/coffee_api_utils"
+	utils "coffee-api-go/utils"
 
 	"github.com/gin-gonic/gin"
 )
