@@ -32,21 +32,13 @@ func (p *ProductController) GetAllProducts(c *gin.Context) {
 }
 
 func (p *ProductController) GetProductByID(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id := extractId(c)
 
-	if err != nil {
-		panic(err)
-	}
+	product, err := p.productService.GetProductByID(uint(id))
 
-	product, err := p.productService.GetProductByID(id)
-
-	if product == nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+	if product == nil && err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
-	}
-
-	if err != nil {
-		panic(err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": product})
@@ -54,24 +46,54 @@ func (p *ProductController) GetProductByID(c *gin.Context) {
 
 func (p *ProductController) CreateProduct(c *gin.Context) {
 	var newProduct models.Product
+
 	if err := c.BindJSON(&newProduct); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	p.productService.CreateProduct(&newProduct)
+	product, err := p.productService.CreateProduct(&newProduct)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"data": product})
 }
 
 func (p *ProductController) UpdateProduct(c *gin.Context) {
-	// your logic for updating a product goes here
-	id := c.Param("id")
-	c.JSON(http.StatusOK, gin.H{"data": "Product with ID " + id + " updated"})
+	var newValues models.Product
+	id := extractId(c)
+
+	if err := c.BindJSON(&newValues); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if newValues.ID <= 0 {
+		newValues.ID = id
+	}
+
+	updatedProduct, err := p.productService.UpdateProduct(&newValues)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": updatedProduct})
 }
 
 func (p *ProductController) DeleteProduct(c *gin.Context) {
-	// your logic for deleting a product goes here
-	id := c.Param("id")
-	c.JSON(http.StatusOK, gin.H{"data": "Product with ID " + id + " deleted"})
+	id := extractId(c)
+
+	if err := p.productService.DeleteProduct(id); err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": "Product with ID " + strconv.FormatUint(uint64(id), 10) + " deleted"})
 }
 
 func RegisterProductRoutes(router *gin.Engine, productController *ProductController) {
@@ -80,4 +102,14 @@ func RegisterProductRoutes(router *gin.Engine, productController *ProductControl
 	router.POST("/products", productController.CreateProduct)
 	router.PUT("/products/:id", productController.UpdateProduct)
 	router.DELETE("/products/:id", productController.DeleteProduct)
+}
+
+func extractId(c *gin.Context) uint {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return uint(id)
 }
