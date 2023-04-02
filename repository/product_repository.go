@@ -8,9 +8,9 @@ import (
 
 type ProductRepository interface {
 	GetAllProducts() ([]*models.Product, error)
-	GetProductByID(id int) (*models.Product, error)
-	CreateProduct(p *models.Product) error
-	UpdateProduct(p *models.Product) error
+	GetProductByID(id uint) (*models.Product, error)
+	CreateProduct(p *models.Product) (*models.Product, error)
+	UpdateProduct(p *models.Product) (*models.Product, error)
 	DeleteProduct(id uint) error
 }
 
@@ -26,28 +26,43 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 
 func (repository *productRepository) GetAllProducts() ([]*models.Product, error) {
 	var products []*models.Product
+
 	err := repository.db.Find(&products).Error
+
 	if err != nil {
 		return nil, err
 	}
+
 	return products, nil
 }
 
-func (repository *productRepository) GetProductByID(id int) (*models.Product, error) {
+func (repository *productRepository) GetProductByID(id uint) (*models.Product, error) {
 	var product models.Product
 	err := repository.db.First(&product, id).Error
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &product, nil
 }
 
-func (repository *productRepository) CreateProduct(p *models.Product) error {
-	return repository.db.Create(p).Error
+func (repository *productRepository) CreateProduct(p *models.Product) (*models.Product, error) {
+	repository.db.Save(p)
+
+	var savedProduct models.Product
+	err := repository.db.First(&savedProduct, p.ID).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &savedProduct, nil
 }
 
-func (repository *productRepository) UpdateProduct(p *models.Product) error {
-	return repository.db.Save(p).Error
+func (repository *productRepository) UpdateProduct(p *models.Product) (*models.Product, error) {
+	repository.db.Save(p)
+	return repository.GetProductByID(p.ID)
 }
 
 func (repository *productRepository) DeleteProduct(id uint) error {

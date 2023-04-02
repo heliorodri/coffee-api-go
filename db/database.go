@@ -30,7 +30,7 @@ type Config struct {
 }
 
 func ReadConfigFile() Config {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)
 	}
@@ -40,15 +40,15 @@ func ReadConfigFile() Config {
 	fileContent, err := ioutil.ReadFile("config/database.toml")
 
 	if err != nil {
-		return config
+		panic(err)
 	}
 
 	dbConfig := fmt.Sprintf(string(fileContent),
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
-		os.Getenv("POSTGRES_DB"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"))
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASS"))
 
 	if _, err := toml.Decode(string(dbConfig), &config); err != nil {
 		panic(err)
