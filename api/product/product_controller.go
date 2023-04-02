@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"coffee-api-go/service"
+	service "coffee-api-go/service/product"
 
 	model "coffee-api-go/model/product"
 	utils "coffee-api-go/utils"
