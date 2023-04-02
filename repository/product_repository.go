@@ -8,7 +8,7 @@ import (
 
 type ProductRepository interface {
 	GetAllProducts() ([]*models.Product, error)
-	GetProductByID(id uint) (*models.Product, error)
+	GetProductByID(id int) (*models.Product, error)
 	CreateProduct(p *models.Product) error
 	UpdateProduct(p *models.Product) error
 	DeleteProduct(id uint) error
@@ -33,7 +33,7 @@ func (repository *productRepository) GetAllProducts() ([]*models.Product, error)
 	return products, nil
 }
 
-func (repository *productRepository) GetProductByID(id uint) (*models.Product, error) {
+func (repository *productRepository) GetProductByID(id int) (*models.Product, error) {
 	var product models.Product
 	err := repository.db.First(&product, id).Error
 	if err != nil {
