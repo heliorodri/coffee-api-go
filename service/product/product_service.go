@@ -1,8 +1,8 @@
 package service
 
 import (
-	models "coffee-api-go/model"
-	"coffee-api-go/repository"
+	model "coffee-api-go/model/product"
+	repository "coffee-api-go/repository/product"
 	"errors"
 	"strconv"
 )
@@ -17,7 +17,7 @@ func NewProductService(repo *repository.ProductRepository) *ProductService {
 	}
 }
 
-func (s *ProductService) GetAllProducts() ([]*models.Product, error) {
+func (s *ProductService) GetAllProducts() ([]*model.Product, error) {
 	products, err := s.repo.GetAllProducts()
 
 	if err != nil {
@@ -27,7 +27,7 @@ func (s *ProductService) GetAllProducts() ([]*models.Product, error) {
 	return products, nil
 }
 
-func (s *ProductService) GetProductByID(id uint) (*models.Product, error) {
+func (s *ProductService) GetProductByID(id uint) (*model.Product, error) {
 	product, err := s.repo.GetProductByID(id)
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (s *ProductService) GetProductByID(id uint) (*models.Product, error) {
 	return product, nil
 }
 
-func (s *ProductService) CreateProduct(p *models.Product) (*models.Product, error) {
+func (s *ProductService) CreateProduct(p *model.Product) (*model.Product, error) {
 	product, err := s.repo.CreateProduct(p)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func (s *ProductService) CreateProduct(p *models.Product) (*models.Product, erro
 	return product, nil
 }
 
-func (s *ProductService) UpdateProduct(p *models.Product) (*models.Product, error) {
+func (s *ProductService) UpdateProduct(p *model.Product) (*model.Product, error) {
 	product, err := s.repo.UpdateProduct(p)
 
 	if err != nil {

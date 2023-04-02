@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"coffee-api-go/service"
+	service "coffee-api-go/service/product"
 
-	models "coffee-api-go/model"
+	model "coffee-api-go/model/product"
 	utils "coffee-api-go/utils"
 
 	"github.com/gin-gonic/gin"
@@ -46,7 +46,7 @@ func (p *ProductController) GetProductByID(c *gin.Context) {
 }
 
 func (p *ProductController) CreateProduct(c *gin.Context) {
-	var newProduct models.Product
+	var newProduct model.Product
 
 	if err := c.BindJSON(&newProduct); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -64,7 +64,7 @@ func (p *ProductController) CreateProduct(c *gin.Context) {
 }
 
 func (p *ProductController) UpdateProduct(c *gin.Context) {
-	var newValues models.Product
+	var newValues model.Product
 	id := utils.ExtractId(c)
 
 	if err := c.BindJSON(&newValues); err != nil {
@@ -101,6 +101,6 @@ func RegisterProductRoutes(router *gin.Engine, productController *ProductControl
 	router.GET("/products", productController.GetAllProducts)
 	router.GET("/products/:id", productController.GetProductByID)
 	router.POST("/products", productController.CreateProduct)
-	router.PUT("/products/:id", productController.UpdateProduct)
+	router.PUT("/products", productController.UpdateProduct)
 	router.DELETE("/products/:id", productController.DeleteProduct)
 }

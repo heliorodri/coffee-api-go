@@ -15,3 +15,7 @@ func ExtractId(c *gin.Context) uint {
 
 	return uint(id)
 }
+
+func FormatId(id uint) string {
+	return strconv.FormatUint(uint64(id), 10)
+}
