@@ -18,3 +18,8 @@ Then, you can then run the script using:
 
     bash ./set-env.sh
 
+## stand up the application
+
+    docker-compose up --build -d
+    
+it will build and stand up the DB and App docker images
