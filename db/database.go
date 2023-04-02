@@ -43,20 +43,16 @@ func ReadConfigFile() Config {
 		return config
 	}
 
-	dbConfig := fmt.Sprintf(string(fileContent), os.Getenv("POSTGRES_DB"), os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
-
-	println("dbConfig: ", dbConfig)
+	dbConfig := fmt.Sprintf(string(fileContent),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("POSTGRES_DB"),
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"))
 
 	if _, err := toml.Decode(string(dbConfig), &config); err != nil {
 		panic(err)
 	}
-
-	println("Database config: ")
-	println("host: ", config.Database.Host)
-	println("port: ", config.Database.Port)
-	println("user: ", config.Database.User)
-	println("password: ", config.Database.Password)
-	println("dbname: ", config.Database.DBName)
 
 	return config
 }
@@ -68,6 +64,8 @@ func NewConnection() *gorm.DB {
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Database.Host, strconv.Itoa(cfg.Database.Port), cfg.Database.User, cfg.Database.Password, cfg.Database.DBName,
 	)
+
+	println("connectionString: ", connectionString)
 
 	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 	if err != nil {
