@@ -3,8 +3,8 @@ package main
 import (
 	productApi "coffee-api-go/api/product"
 	"coffee-api-go/db"
-	models "coffee-api-go/model"
-	"coffee-api-go/repository"
+	productModel "coffee-api-go/model/product"
+	productRepo "coffee-api-go/repository/product"
 	"coffee-api-go/service"
 
 	"github.com/gin-gonic/gin"
@@ -22,9 +22,9 @@ func main() {
 }
 
 func productRoutesAndDBMigration(router *gin.Engine, db *gorm.DB) {
-	db.AutoMigrate(&models.Product{})
+	db.AutoMigrate(&productModel.Product{})
 
-	productRepository := repository.NewProductRepository(db)
+	productRepository := productRepo.NewProductRepository(db)
 	productService := service.NewProductService(&productRepository)
 	productController := productApi.NewProductController(productService)
 	productApi.RegisterProductRoutes(router, productController)

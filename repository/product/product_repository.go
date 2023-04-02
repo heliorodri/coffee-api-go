@@ -1,7 +1,7 @@
 package repository
 
 import (
-	models "coffee-api-go/model"
+	models "coffee-api-go/model/product"
 
 	"gorm.io/gorm"
 )
