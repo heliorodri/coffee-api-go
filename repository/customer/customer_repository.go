@@ -18,6 +18,12 @@ type customerRepository struct {
 	db gorm.DB
 }
 
+func NewCustomerRepository(db *gorm.DB) CustomerRepository {
+	return &customerRepository{
+		db: *db,
+	}
+}
+
 func (repository *customerRepository) GetAll() ([]*models.Customer, error) {
 	var customers []*models.Customer
 

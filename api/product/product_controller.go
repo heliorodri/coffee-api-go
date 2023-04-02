@@ -101,6 +101,6 @@ func RegisterProductRoutes(router *gin.Engine, productController *ProductControl
 	router.GET("/products", productController.GetAllProducts)
 	router.GET("/products/:id", productController.GetProductByID)
 	router.POST("/products", productController.CreateProduct)
-	router.PUT("/products/:id", productController.UpdateProduct)
+	router.PUT("/products", productController.UpdateProduct)
 	router.DELETE("/products/:id", productController.DeleteProduct)
 }
