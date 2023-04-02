@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"coffee-api-go/service"
 
@@ -31,8 +32,24 @@ func (p *ProductController) GetAllProducts(c *gin.Context) {
 }
 
 func (p *ProductController) GetProductByID(c *gin.Context) {
-	id := c.Param("id")
-	c.JSON(http.StatusOK, gin.H{"data": "Product with ID " + id})
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		panic(err)
+	}
+
+	product, err := p.productService.GetProductByID(id)
+
+	if product == nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+		return
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": product})
 }
 
 func (p *ProductController) CreateProduct(c *gin.Context) {
