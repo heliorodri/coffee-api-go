@@ -7,6 +7,7 @@ import (
 	"coffee-api-go/service"
 
 	models "coffee-api-go/model"
+	utils "coffee-api-go/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +33,7 @@ func (p *ProductController) GetAllProducts(c *gin.Context) {
 }
 
 func (p *ProductController) GetProductByID(c *gin.Context) {
-	id := extractId(c)
+	id := utils.ExtractId(c)
 
 	product, err := p.productService.GetProductByID(uint(id))
 
@@ -64,7 +65,7 @@ func (p *ProductController) CreateProduct(c *gin.Context) {
 
 func (p *ProductController) UpdateProduct(c *gin.Context) {
 	var newValues models.Product
-	id := extractId(c)
+	id := utils.ExtractId(c)
 
 	if err := c.BindJSON(&newValues); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -86,7 +87,7 @@ func (p *ProductController) UpdateProduct(c *gin.Context) {
 }
 
 func (p *ProductController) DeleteProduct(c *gin.Context) {
-	id := extractId(c)
+	id := utils.ExtractId(c)
 
 	if err := p.productService.DeleteProduct(id); err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -102,14 +103,4 @@ func RegisterProductRoutes(router *gin.Engine, productController *ProductControl
 	router.POST("/products", productController.CreateProduct)
 	router.PUT("/products/:id", productController.UpdateProduct)
 	router.DELETE("/products/:id", productController.DeleteProduct)
-}
-
-func extractId(c *gin.Context) uint {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return uint(id)
 }

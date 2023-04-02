@@ -48,9 +48,19 @@ func (s *ProductService) CreateProduct(p *models.Product) (*models.Product, erro
 }
 
 func (s *ProductService) UpdateProduct(p *models.Product) (*models.Product, error) {
-	return s.repo.UpdateProduct(p)
+	product, err := s.repo.UpdateProduct(p)
+
+	if err != nil {
+		return nil, errors.New("FAILED to update product.\n Error: " + err.Error())
+	}
+
+	return product, nil
 }
 
 func (s *ProductService) DeleteProduct(id uint) error {
-	return s.repo.DeleteProduct(id)
+	if err := s.repo.DeleteProduct(id); err != nil {
+		return errors.New("FAILED to delete product with id " + strconv.FormatUint(uint64(id), 10) + ".\n Error: " + err.Error())
+	}
+
+	return nil
 }
