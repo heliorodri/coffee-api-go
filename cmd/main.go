@@ -13,7 +13,6 @@ import (
 func main() {
 	// Create a new Gin router
 	r := gin.Default()
-	gin.SetMode(gin.ReleaseMode)
 
 	db := db.NewConnection()
 	db.AutoMigrate(&models.Product{})
