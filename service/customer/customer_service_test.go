@@ -35,9 +35,7 @@ func TestGetAllWithData(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
-	if !reflect.DeepEqual(customers, expected) {
-		t.Errorf("Expected %v but got %v", expected, customers)
-	}
+	assert.True(t, reflect.DeepEqual(customers, expected))
 }
 
 func TestGetAllWithEmptyReturn(t *testing.T) {
@@ -56,9 +54,7 @@ func TestGetAllWithEmptyReturn(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
-	if !reflect.DeepEqual(customers, expected) {
-		t.Errorf("Expected %v but got %v", expected, customers)
-	}
+	assert.True(t, reflect.DeepEqual(customers, expected))
 }
 
 func TestGetAllWithError(t *testing.T) {
