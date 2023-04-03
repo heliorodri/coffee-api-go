@@ -31,7 +31,7 @@ func (s *CustomerService) GetByID(id uint) (*model.Customer, error) {
 	customer, err := s.repo.GetByID(id)
 
 	if err != nil {
-		return nil, errors.New("FAILED to get customer with id " + utils.FormatId(id) + ".\n Error: " + err.Error())
+		return nil, errors.New("FAILED to get customer with id " + utils.FormatId(id) + ". Error: " + err.Error())
 	}
 
 	return customer, nil
