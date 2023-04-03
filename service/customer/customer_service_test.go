@@ -1,14 +1,27 @@
 package service
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
 	models "coffee-api-go/model/customer"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAll(t *testing.T) {
-	expected := []*models.Customer{{Name: "John Doe"}, {Name: "Jane Smith"}}
+func TestGetAllWithData(t *testing.T) {
+	expected := []*models.Customer{
+		{
+			Name:  "John Doe",
+			Email: "johndoe@mail.com",
+		},
+		{
+			Name:  "Jane Smith",
+			Email: "janesmith@mail.com",
+		},
+	}
+
 	repo := &mockRepository{
 		mockGetAll: func() ([]*models.Customer, error) {
 			return expected, nil
@@ -27,7 +40,40 @@ func TestGetAll(t *testing.T) {
 	}
 }
 
-// Define a mock repository struct that implements the repository interface
+func TestGetAllWithEmptyReturn(t *testing.T) {
+	expected := []*models.Customer{}
+
+	repo := &mockRepository{
+		mockGetAll: func() ([]*models.Customer, error) {
+			return expected, nil
+		},
+	}
+
+	service := &CustomerService{repo: repo}
+	customers, err := service.GetAll()
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if !reflect.DeepEqual(customers, expected) {
+		t.Errorf("Expected %v but got %v", expected, customers)
+	}
+}
+
+func TestGetAllWithError(t *testing.T) {
+	repo := &mockRepository{
+		mockGetAll: func() ([]*models.Customer, error) {
+			return nil, errors.New("Error connecting to database")
+		},
+	}
+
+	service := &CustomerService{repo: repo}
+	_, err := service.GetAll()
+
+	assert.EqualError(t, err, "FAILED to get all customers. Error: Error connecting to database")
+}
+
 type mockRepository struct {
 	mockGetAll  func() ([]*models.Customer, error)
 	mockGetByID func() (*models.Customer, error)
