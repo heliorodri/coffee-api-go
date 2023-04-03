@@ -70,6 +70,41 @@ func TestGetAllWithError(t *testing.T) {
 	assert.EqualError(t, err, "FAILED to get all customers. Error: Error connecting to database")
 }
 
+func TestGetByIDWithData(t *testing.T) {
+	expected := &models.Customer{
+		Name:  "John Doe",
+		Email: "johndoe_get_by_id@mail.com",
+	}
+
+	repo := &mockRepository{
+		mockGetByID: func() (*models.Customer, error) {
+			return expected, nil
+		},
+	}
+
+	service := &CustomerService{repo: repo}
+	customer, err := service.GetByID(1)
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	assert.True(t, reflect.DeepEqual(customer, expected))
+}
+
+func TestGetByIdNoDataFound(t *testing.T) {
+	repo := &mockRepository{
+		mockGetByID: func() (*models.Customer, error) {
+			return nil, errors.New("Customer not found - test")
+		},
+	}
+
+	service := &CustomerService{repo: repo}
+	_, err := service.GetByID(1)
+
+	assert.EqualError(t, err, "FAILED to get customer with id 1. Error: Customer not found - test")
+}
+
 type mockRepository struct {
 	mockGetAll  func() ([]*models.Customer, error)
 	mockGetByID func() (*models.Customer, error)
